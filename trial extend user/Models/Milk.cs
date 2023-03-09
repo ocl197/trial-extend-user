@@ -9,6 +9,8 @@
         public int PmTotal { get; set; }
         public int TotalMilkProduced { get; set; }
         public int TotalUsed { get; set; }
+        public int FarmId { get; set; }
+        public Farm Farm { get; set; }
 
     }
 }

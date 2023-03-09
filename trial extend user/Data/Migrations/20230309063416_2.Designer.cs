@@ -12,8 +12,8 @@ using trial_extend_user.Data;
 namespace trial_extend_user.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230308073459_FarmId2")]
-    partial class FarmId2
+    [Migration("20230309063416_2")]
+    partial class _2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -180,9 +180,6 @@ namespace trial_extend_user.Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int>("FarmId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -218,8 +215,6 @@ namespace trial_extend_user.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FarmId");
-
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -233,19 +228,41 @@ namespace trial_extend_user.Data.Migrations
 
             modelBuilder.Entity("trial_extend_user.Models.Farm", b =>
                 {
-                    b.Property<int>("FarmID")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FarmID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FarmName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("FarmID");
+                    b.Property<string>("OwnerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("Farm");
+                    b.Property<string>("SubscriptionStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("Farms");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            FarmName = "Olivers Farm",
+                            OwnerId = "2b9659af-daee-4b19-9678-6249fc5f9a42",
+                            SubscriptionStatus = "Paid"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -299,15 +316,13 @@ namespace trial_extend_user.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("trial_extend_user.Data.ApplicationUser", b =>
+            modelBuilder.Entity("trial_extend_user.Models.Farm", b =>
                 {
-                    b.HasOne("trial_extend_user.Models.Farm", "Farm")
+                    b.HasOne("trial_extend_user.Data.ApplicationUser", "ApplicationUser")
                         .WithMany()
-                        .HasForeignKey("FarmId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ApplicationUserId");
 
-                    b.Navigation("Farm");
+                    b.Navigation("ApplicationUser");
                 });
 #pragma warning restore 612, 618
         }
